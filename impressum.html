@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impressum – MatheNils</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234a5ae0'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M8 12h8M12 8v8'/%3E%3Cpath d='M18 20h6'/%3E%3C/g%3E%3C/svg%3E">
+  <!-- Dasselbe Farbschema wie in der App: gewählt (localStorage) oder vom System. -->
+  <script>
+    try {
+      const stand = JSON.parse(localStorage.getItem('mathenils-v1') || '{}');
+      const dunkel = stand.theme ? stand.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dunkel ? 'dark' : 'light');
+    } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+  </script>
+  <link rel="stylesheet" href="css/schriften.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="rechtsseite">
+  <main class="container rechtstext">
+    <p class="zurueck"><a href="index.html">← Zurück zu MatheNils</a></p>
+
+    <h1>Impressum</h1>
+
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p>
+      Nils Otten<br>
+      Nordring 31<br>
+      50127 Bergheim<br>
+      Deutschland
+    </p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: <a href="mailto:kontakt@mathenils.me">kontakt@mathenils.me</a></p>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p>
+      Nils Otten, Anschrift wie oben
+    </p>
+
+    <h2>Hinweis</h2>
+    <p>MatheNils ist ein privates, nicht kommerzielles Lernangebot. Es gibt keine
+    Werbung, keine Bezahlinhalte und keine Anmeldung.</p>
+
+    <h2>Haftung für Inhalte</h2>
+    <p>Die Erklärungen und Aufgaben wurden mit Sorgfalt erstellt und mehrfach
+    geprüft. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann
+    trotzdem keine Gewähr übernommen werden. Als Diensteanbieter bin ich nach den
+    allgemeinen Gesetzen für eigene Inhalte auf diesen Seiten verantwortlich.
+    Wer einen Fehler findet, schreibt mir bitte eine kurze E-Mail – er wird dann
+    so schnell wie möglich korrigiert.</p>
+
+    <h2>Urheberrecht</h2>
+    <p>Texte, Aufgaben, Grafiken und der Programmcode dieser Seite sind
+    urheberrechtlich geschützt. Für den eigenen Unterricht und das eigene Lernen
+    dürfen sie gern genutzt werden; für jede Veröffentlichung oder Weitergabe
+    darüber hinaus ist eine Zustimmung nötig.</p>
+    <p>Die Schriften Inter und Space Grotesk stehen unter der SIL Open Font
+    License 1.1 (siehe <a href="fonts/LIZENZ.txt">Lizenztext</a>).</p>
+
+    <p class="rechts-fuss"><a href="datenschutz.html">Datenschutzerklärung</a></p>
+  </main>
+</body>
+</html>

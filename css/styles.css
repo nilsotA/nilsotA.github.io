@@ -1,0 +1,1364 @@
+/* ============================================================
+   MatheNils – Stylesheet 3.0
+   Redesign „Werkbank“: ein Token-System statt Einzelentscheidungen,
+   drei Elevationsstufen mit Bedeutung, Stufenfarben ohne Verlauf.
+   Alle Ansichten laufen direkt auf diesen Tokens; eine Brückenschicht auf
+   alte Namen gibt es nicht mehr. Reihenfolge der Abschnitte im Inhalt:
+   1 Tokens · 1c Grundregeln · 2 Rahmen · 3 Startseite · 7a Themenseite ·
+   5 Üben · 6 Global · 7b Statistik/Formeln/Challenge · 4 Erklärseite.
+   ============================================================ */
+
+/* ============================================================
+   1 · TOKENS
+   Alles, was mehr als einmal vorkommt, steht hier – und nur hier.
+   Vorher: 46 verschiedene font-size-, 63 padding-Werte, einzeln
+   nach Gefühl gesetzt. Wer hier etwas ändert, ändert es überall.
+   ============================================================ */
+
+:root {
+  /* --- Schrift ------------------------------------------------
+     Fallback-Familien siehe Abschnitt 3.4: metrisch angeglichen,
+     damit die Seite ohne Google Fonts nicht anders aussieht,
+     sondern nur anders gesetzt ist. */
+  --font-display: 'Space Grotesk', 'Grotesk Fallback', system-ui, sans-serif;
+  --font-text:    'Inter', 'Inter Fallback', system-ui, sans-serif;
+
+  /* --- Schriftgrößen: 10 Stufen ------------------------------
+     Unten dicht (Etiketten, Meta), oben weit (Überschriften).
+     Ab --fs-500 fluid: die Sprünge, die auf dem Handy zu groß
+     wären, wachsen erst mit der Fläche. */
+  --fs-50:  0.6875rem;                                  /* 11 – Versalien-Etikett */
+  --fs-100: 0.75rem;                                    /* 12 – Meta, Zähler      */
+  --fs-200: 0.8125rem;                                  /* 13 – Kartentext, Chip  */
+  --fs-300: 0.875rem;                                   /* 14 – Sekundärtext      */
+  --fs-400: 1rem;                                       /* 16 – Fließtext         */
+  --fs-500: clamp(1.0625rem, 1.02rem + 0.20vw, 1.1875rem);  /* Lead, Kartentitel  */
+  --fs-600: clamp(1.1875rem, 1.09rem + 0.40vw, 1.375rem);   /* h3                 */
+  --fs-700: clamp(1.375rem,  1.19rem + 0.80vw, 1.75rem);    /* h2, Themenkopf     */
+  --fs-800: clamp(1.75rem,   1.45rem + 1.30vw, 2.375rem);   /* h1                 */
+  --fs-900: clamp(1.875rem,  1.50rem + 1.60vw, 2.75rem);    /* Aufgabenfrage      */
+
+  --lh-tight: 1.15;   /* Überschriften        */
+  --lh-snug:  1.3;    /* Kartentitel, Fragen  */
+  --lh-text:  1.6;    /* Fließtext            */
+  --track-label: 0.12em;
+  --track-tight: -0.015em;
+
+  /* --- Abstände: 4-px-Raster ---------------------------------
+     --sp-4 (16px) ist der Standardabstand. Alles darüber ist
+     eine bewusste Trennung, alles darunter eine Zusammengehörigkeit. */
+  --sp-1: 4px;  --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;  --sp-5: 24px;
+  --sp-6: 32px; --sp-7: 48px;  --sp-8: 64px;  --sp-9: 96px;
+  --gutter: clamp(16px, 4vw, 32px);   /* Seitenrand des .container */
+  --measure: 34rem;                   /* Lesespalte: ~66 Zeichen   */
+
+  /* --- Radien: 4 Stufen statt 20/12 für alles ---------------- */
+  --r-1: 8px;    /* Chip, Icon-Knopf     */
+  --r-2: 12px;   /* Karte, Feld, Button  */
+  --r-3: 16px;   /* Flächen-Baustein     */
+  --r-4: 22px;   /* Hauptobjekt          */
+  --r-pill: 999px;
+
+  /* --- Höhen & Tippziele ------------------------------------- */
+  --h-header: 48px;   /* eine Zeile, auch auf 360px (vorher 97px) */
+  --h-tabbar: 56px;
+  --tap: 44px;        /* Projektvorgabe war 32 – 44 ist die bessere Grenze */
+
+  /* --- Flächen & Text ---------------------------------------- */
+  --bg:         #f1f3f6;
+  --surface:    #ffffff;
+  --surface-2:  #e9edf3;   /* eingesenkt: Fortschrittsspur, Formelfläche */
+  --line:       #e2e6ed;
+  --line-strong:#cfd6e2;
+  --ink:        #191d26;   /* 15,2:1 auf --bg */
+  --ink-2:      #4c5464;   /*  6,8:1 – Fließtext sekundär */
+  /* 4,7:1 auf --bg, aber nur 4,42:1 auf --surface-2 – und dort steht die
+     Bildunterschrift jeder Figur und der Trennpunkt der Formelkarten. Der Wert
+     war gegen den Seitengrund gerechnet, nicht gegen die dunkelste Fläche, auf
+     der er vorkommt. #616979 trägt auf allen dreien: 4,96 / 5,52 / 4,70. */
+  --ink-3:      #616979;   /*  nur Meta, Zähler, Platzhalter */
+
+  /* --- Akzent -------------------------------------------------
+     Ein einziger Akzent (Tinte). Die Stufenfarben sind keine
+     Akzente, sondern Orientierung – sie färben nie einen Knopf. */
+  --accent:      #1b3fa8;  /* 9,0:1 auf Weiß  */
+  --accent-soft: #e7ecf9;
+  --on-accent:   #ffffff;
+
+  /* --- Klassenstufen: Sättigung sinkt, Ton wird kühler -------- */
+  --stufe-unter:  #0d7a5f;
+  --stufe-mittel: #1b6fb0;
+  --stufe-ober:   #4b3fa8;
+  --stufe-uni:    #2f3747;
+
+  /* --- Rückmeldung: Fläche und Schrift getrennt ---------------
+     Die -ink-Trennung aus dem Bestand bleibt: Flächenfarben
+     tragen als Schriftfarbe zu wenig Kontrast. */
+  --ok:      #16a34a;  --ok-ink:  #146c34;  --ok-soft:  #e7f6ec;
+  /* Lesbar AUF der vollen Signalfarbe. Der Kennbuchstabe der richtigen Option
+     stand als --surface (weiß) auf --ok und kam damit auf 3,30:1 – genau die
+     Falle, die für Themenzeichen und Rückmeldetext längst vermerkt ist. Hell
+     braucht dunkle Schrift (5,12:1), dunkel die helle Fläche (9,58:1). */
+  --on-ok:   var(--ink);
+  --err:     #dc2626;  --err-ink: #b3261d;  --err-soft: #fdeeee;
+
+  /* --- Elevation: drei Stufen, jede mit Bedeutung -------------
+     0 = Grundfläche: Raster, Listen, Themenkarten. Nur Linie.
+     1 = angehoben:   Kopfzeile beim Scrollen, Tab-Leiste.
+     2 = schwebt:     Toast, Level-Aufstieg, Dialog.
+     Vorher trugen 9 Elemente denselben Schatten – deshalb sah
+     alles gleich wichtig aus. */
+  --e-1: 0 1px 2px rgba(20, 25, 38, .06), 0 1px 0 var(--line);
+  --e-2: 0 12px 28px rgba(20, 25, 38, .14);
+
+  /* --- Bewegung ----------------------------------------------- */
+  --dur-1: .12s;  /* Zustandswechsel (hover, active) */
+  --dur-2: .22s;  /* Ein-/Ausblenden                 */
+  --ease: cubic-bezier(.2, .7, .3, 1);
+
+  --mesh-1: rgba(27, 63, 168, .10);
+  --mesh-2: rgba(13, 122, 95, .08);
+}
+
+html[data-theme="dark"] {
+  --bg:         #14171d;
+  --surface:    #1a1e26;
+  --surface-2:  #222833;
+  --line:       #262c37;
+  --line-strong:#333b49;
+  --ink:        #e8eaef;
+  --ink-2:      #b6bdcb;   /*  9,4:1 */
+  --ink-3:      #9aa3b5;   /*  7,1:1 */
+
+  --accent:      #7aa2ff;  /* 7,1:1 auf --bg */
+  --accent-soft: #1e2740;
+  --on-accent:   #111726;  /* 7,1:1 auf --accent */
+
+  --stufe-unter:  #3fbf9a;
+  --stufe-mittel: #6aa9e8;
+  --stufe-ober:   #9a92ff;
+  --stufe-uni:    #b9c2d4;
+
+  --ok:  #4ade80;  --ok-ink:  #4ade80;  --ok-soft:  #10301d;
+  --on-ok: var(--surface);
+  --err: #f87171;  --err-ink: #f87171;  --err-soft: #3a161c;
+
+  --e-1: 0 1px 2px rgba(0, 0, 0, .5), 0 1px 0 var(--line);
+  --e-2: 0 14px 34px rgba(0, 0, 0, .55);
+
+  --mesh-1: rgba(122, 162, 255, .12);
+  --mesh-2: rgba(63, 191, 154, .08);
+}
+
+/* Eine Variable pro Gruppe statt vier Sonderregeln je Bauteil.
+   .g-unter … .g-uni stehen bereits an Karten, Köpfen und SVGs –
+   ab hier reicht überall var(--stufe). */
+.g-unter  { --stufe: var(--stufe-unter);  }
+.g-mittel { --stufe: var(--stufe-mittel); }
+.g-ober   { --stufe: var(--stufe-ober);   }
+.g-uni    { --stufe: var(--stufe-uni);    }
+/* 9 % statt 12 %: Bei 12 % lag die Stufenfarbe auf ihrer eigenen Tönung für
+   Unter- und Mittelstufe bei exakt 4,50:1 – bestanden, aber ohne jeden
+   Spielraum. Mit 9 % sind es 4,9:1. */
+[class*="g-"] { --stufe-soft: color-mix(in oklab, var(--stufe) 9%, var(--surface)); }
+
+/* --- Gestalteter Fallback -----------------------------------
+   Ohne Netz übernimmt die Systemschrift – metrisch so
+   angeglichen, dass Zeilenumbrüche und Höhen gleich bleiben und
+   beim späteren Eintreffen der Webfont nichts springt. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Segoe UI'), local('Helvetica Neue'), local('Arial');
+  size-adjust: 107%; ascent-override: 90%; descent-override: 22%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Grotesk Fallback';
+  src: local('Segoe UI Semibold'), local('Helvetica Neue'), local('Arial');
+  size-adjust: 103%; ascent-override: 95%; descent-override: 24%; line-gap-override: 0%;
+}
+
+/* ============================================================
+   1c · GRUNDREGELN
+   ============================================================ */
+
+/* Das hidden-Attribut muss jede display-Regel schlagen. Ohne diese Zeile
+   blieben Themenkarten sichtbar, obwohl die Suche sie ausgeblendet hat:
+   .topic-card { display: block } gewinnt sonst gegen die Vorgabe des
+   Browsers für [hidden]. */
+[hidden] { display: none !important; }
+
+h1, h2, h3, .logo, .value {
+  font-family: var(--font-display);
+  letter-spacing: var(--track-tight);
+}
+
+main.container { flex: 1; padding-top: var(--sp-5); padding-bottom: var(--sp-8); }
+a { color: var(--accent); }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+::selection { background: var(--accent-soft); }
+
+/* Der Mesh-Hintergrund driftet weiter – die Keyframes bleiben. */
+@keyframes drift-a { from { transform: translate(0, 0) scale(1); }    to { transform: translate(9vmax, 6vmax) scale(1.12); } }
+@keyframes drift-b { from { transform: translate(0, 0) scale(1.08); } to { transform: translate(-8vmax, -7vmax) scale(1); } }
+
+/* ============================================================
+   2 · RAHMEN
+   ============================================================ */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font: var(--fs-400)/var(--lh-text) var(--font-text);
+  font-variant-numeric: tabular-nums;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+  overflow-x: hidden;
+  /* Platz für die Tab-Leiste, nur solange es sie gibt */
+  padding-bottom: calc(var(--h-tabbar) + env(safe-area-inset-bottom));
+}
+@media (min-width: 720px) { body { padding-bottom: 0; } }
+
+.container { width: min(1120px, 100%); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* Mesh-Hintergrund bleibt – aber nur auf der Startseite.
+   body[data-view] setzt render() (siehe 05.3). */
+body::before, body::after {
+  content: ""; position: fixed; z-index: -1;
+  width: 52vmax; height: 52vmax; border-radius: 50%;
+  filter: blur(70px); pointer-events: none;
+  opacity: 0; transition: opacity .4s var(--ease);
+}
+body[data-view="home"]::before, body[data-view="home"]::after { opacity: 1; }
+body::before { top: -20vmax; left: -12vmax;
+  background: radial-gradient(circle at 30% 30%, var(--mesh-1), transparent 62%);
+  animation: drift-a 30s ease-in-out infinite alternate; }
+body::after { bottom: -24vmax; right: -14vmax;
+  background: radial-gradient(circle at 60% 40%, var(--mesh-2), transparent 60%);
+  animation: drift-b 36s ease-in-out infinite alternate; }
+
+/* --- Kopfzeile: eine Zeile, 48px, auf jeder Breite ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in oklab, var(--surface) 84%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner { height: var(--h-header); display: flex; align-items: center; gap: var(--sp-3); }
+.logo { margin-right: auto; text-decoration: none; color: var(--ink);
+  font: 600 var(--fs-500)/1 var(--font-display); letter-spacing: var(--track-tight);
+  /* Über die volle Kopfzeilenhöhe: Als reiner Text war der Link zur Startseite
+     nur 17 px hoch und damit kaum zu treffen. */
+  display: flex; align-items: center; align-self: stretch; }
+.logo strong { font-weight: 700; }
+
+.main-nav { display: none; gap: var(--sp-1); }
+@media (min-width: 720px) { .main-nav { display: flex; } }
+.main-nav a { padding: 8px 12px; border-radius: var(--r-1); text-decoration: none;
+  font: 500 var(--fs-300)/1 var(--font-text); color: var(--ink-2); }
+.main-nav a:hover { background: var(--surface-2); color: var(--ink); }
+.main-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+
+.header-right { display: flex; align-items: center; gap: var(--sp-2); }
+.level-badge { display: flex; align-items: center; padding: 6px 9px; border-radius: var(--r-1);
+  background: var(--accent-soft); color: var(--accent);
+  font: 600 var(--fs-100)/1 var(--font-display); }
+/* XP-Balken und XP-Text sind jetzt die Linie unter der Kopfzeile */
+
+/* Strichsymbole aus dem Sprite in index.html. Ohne feste Maße würde ein
+   inline-SVG in Standardgröße (300x150) einrasten. */
+.icon { width: 20px; height: 20px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round; }
+.icon-lg { width: 24px; height: 24px; }
+
+.icon-btn, .theme-toggle {
+  width: var(--tap); height: var(--tap); display: grid; place-items: center;
+  border: 0; background: none; border-radius: var(--r-1); color: var(--ink-2); cursor: pointer;
+}
+.icon-btn:hover, .theme-toggle:hover { background: var(--surface-2); color: var(--ink); }
+
+.xp-line { height: 3px; background: var(--surface-2); }
+.xp-line > span { display: block; height: 100%; background: var(--accent);
+  transition: width .5s var(--ease); }
+
+/* --- Tab-Leiste unten (nur < 720px) ------------------------- */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex;
+  height: calc(var(--h-tabbar) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface); border-top: 1px solid var(--line);
+  /* Bewusst ohne transition: Der Ortswechsel läuft bereits über eine View
+     Transition, die die ganze Seite als Momentaufnahme ersetzt. Ein
+     gleichzeitiger CSS-Übergang auf diesem fest positionierten Element
+     bleibt darin bei Zeit 0 stehen – die Leiste würde nie verschwinden. */
+}
+@media (min-width: 720px) { .tabbar { display: none; } }
+.tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 4px; text-decoration: none;
+  font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+.tabbar a[aria-current="page"] { color: var(--accent); font-weight: 600; }
+
+/* Üben ist Vollbild: die Leiste fährt weg, der Platz auch. */
+/* visibility statt nur transform: Sonst bleiben die vier Links in der
+   Tabreihenfolge, obwohl sie unter dem Bildschirmrand liegen. */
+body[data-view="ueben"] .tabbar { transform: translateY(100%); visibility: hidden; }
+body[data-view="ueben"] { padding-bottom: 0; }
+body[data-view="ueben"] .site-footer { display: none; }
+
+.skip-link { position: absolute; left: var(--sp-3); top: -60px; z-index: 40;
+  display: grid; place-items: center; min-height: var(--tap);
+  padding: 10px var(--sp-4); border-radius: var(--r-1);
+  background: var(--accent); color: var(--on-accent);
+  font: 600 var(--fs-300)/1 var(--font-text); text-decoration: none; }
+.skip-link:focus { top: var(--sp-2); }
+
+.site-footer { margin-top: var(--sp-9); padding: var(--sp-6) 0 var(--sp-7);
+  border-top: 1px solid var(--line); color: var(--ink-3); font-size: var(--fs-300); }
+.site-footer strong { color: var(--ink-2); }
+
+/* ---------- Einblend-Animationen ---------- */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title, .topic-group, .stat-tiles, .stat-rows, .breadcrumb,
+.topic-head, .tabs, #tabContent, .danger-zone, .empty-hint {
+  animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.topic-card, .stat-tile, .stat-row {
+  animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+
+/* ============================================================
+   3 · STARTSEITE
+   Ersetzt .hero, .hero-main, .hero-side, .hero-card, .float-syms.
+   ============================================================ */
+
+/* Hauptobjekt. Das einzige Element der Startseite mit --e-2. */
+.challenge-band {
+  --band-ink: #ffffff; --band-ink-2: #9aa3b5;   /* eigene Töne: 6,7:1 auf --ink */
+  display: flex; align-items: center; gap: var(--sp-4);
+  margin-top: var(--sp-5); padding: var(--sp-4);
+  border-radius: var(--r-4); background: var(--ink); color: var(--band-ink);
+  text-decoration: none; box-shadow: var(--e-2);
+}
+html[data-theme="dark"] .challenge-band { background: var(--surface-2); }
+.challenge-band .ch-label { font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--band-ink-2); }
+.challenge-band h2 { margin: var(--sp-2) 0 var(--sp-3);
+  font: 600 var(--fs-600)/var(--lh-snug) var(--font-display); }
+.ch-dots { display: flex; gap: 5px; align-items: center; }
+.ch-dot { width: 22px; height: 4px; border-radius: 2px; background: #3a4152; }
+/* Weiß auf dem dunklen Band. --accent lag dort bei 1,13:1 gegen den
+   leeren Punkt und war im hellen Modus praktisch nicht zu sehen. */
+.ch-dot.done { background: var(--band-ink); }
+.ch-dot.miss { background: var(--err); opacity: .55; }
+.ch-meta { margin-left: var(--sp-2); font: 500 var(--fs-100)/1 var(--font-text); color: var(--band-ink-2); }
+
+/* Serie: sieben Kästchen statt 🔥. Zeigt zusätzlich, welche Tage fehlen. */
+.serie-zeile { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) 0; }
+.serie-punkte { display: flex; gap: 3px; align-items: center; }
+.serie-punkte i { width: 5px; height: 12px; border-radius: 2px; background: var(--surface-2); }
+.serie-punkte i.an { background: var(--stufe-unter); }
+.serie-text { font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+
+/* Fortsetzen-Zeile: eine Zeile, keine Karte. */
+.weiter-zeile { display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) 0; margin-top: var(--sp-2);
+  border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.weiter-zeile .titel { flex: 1; font: 600 var(--fs-300)/var(--lh-snug) var(--font-display); }
+.weiter-zeile .meta { display: block; font: 400 var(--fs-100)/1.3 var(--font-text); color: var(--ink-3); }
+
+/* Suche */
+.search-row { position: relative; margin-top: var(--sp-4); }
+.search-row .icon { position: absolute; left: 12px; top: 50%; translate: 0 -50%; color: var(--ink-3); }
+.search-input { width: 100%; min-height: var(--tap); padding: 0 var(--sp-3) 0 40px;
+  border: 1px solid var(--line); border-radius: var(--r-2);
+  background: var(--surface); color: var(--ink);
+  font: 400 var(--fs-300)/1 var(--font-text); }
+.search-input::placeholder { color: var(--ink-3); }
+.search-input:focus-visible { border-color: var(--accent); }
+.such-leer { margin: var(--sp-3) 0 0; color: var(--ink-2); font-size: var(--fs-300); }
+
+/* Stufenfilter: bleibt unter der Kopfzeile stehen. */
+.stufen-filter { position: sticky; top: calc(var(--h-header) + 3px); z-index: 12;
+  display: flex; gap: var(--sp-2); overflow-x: auto; scrollbar-width: none;
+  padding: var(--sp-3) 0; background: var(--bg); }
+.stufen-filter button { flex: none; min-height: 40px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: var(--r-1); background: var(--surface);
+  font: 500 var(--fs-200)/1 var(--font-text); color: var(--ink-2); cursor: pointer; }
+.stufen-filter button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* Gruppen */
+.topic-group { margin-top: var(--sp-5); }
+.group-head { display: flex; align-items: center; gap: var(--sp-3); padding-bottom: var(--sp-2); }
+.group-head::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--stufe); }
+.group-head h2 { margin: 0; font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ink-2); }
+.group-head .rule { flex: 1; height: 1px; background: var(--line); }
+.group-count { font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+
+/* Raster: 2 Spalten ab 360px, 3–5 ab 720px. */
+.topic-grid { display: grid; gap: var(--sp-2);
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); }
+@media (min-width: 720px) { .topic-grid { gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); } }
+
+.topic-card {
+  /* Spalte statt Block: Das Raster streckt alle Karten einer Zeile auf dieselbe
+     Höhe, der Inhalt wuchs aber von oben. Sobald ein Titel umbrach, saß der
+     Fortschrittsstrich 17 px tiefer als der seiner Nachbarn – bei vier Karten
+     nebeneinander die auffälligste Linie im Raster. Jetzt trägt sie der Fuß. */
+  display: flex; flex-direction: column;
+  padding: var(--sp-3); text-decoration: none; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2);
+  box-shadow: none;   /* Grundfläche – Karten heben nicht mehr ab */
+  transition: border-color var(--dur-1) var(--ease), translate var(--dur-1) var(--ease);
+}
+.topic-card:hover { border-color: var(--stufe); translate: 0 -1px; }
+.topic-card .kopf { display: flex; align-items: flex-start; justify-content: space-between; }
+.topic-num { font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+.topic-card h3 { margin: var(--sp-3) 0 var(--sp-2); text-wrap: balance;
+  font: 600 var(--fs-200)/var(--lh-snug) var(--font-display); }
+
+/* Zeichenkachel: das Thema als mathematisches Symbol, siehe 06. */
+.topic-icon-tile {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 34px; height: 34px; padding-inline: 6px; border-radius: var(--r-1);
+  background: var(--stufe-soft); color: var(--stufe);
+  font: 600 var(--fs-500)/1 var(--font-display);
+}
+.topic-icon-tile.mini { min-width: 26px; height: 26px; font-size: var(--fs-200); }
+
+.topic-card .progressbar { margin-top: auto; }
+.progressbar { height: 2px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+.progressbar > span { display: block; height: 100%; background: var(--stufe);
+  transition: width .4s var(--ease); }
+
+/* Empfehlung: Randnotiz statt Banner. */
+.reco-zeile { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center;
+  margin-top: var(--sp-5); padding-left: var(--sp-4); border-left: 2px solid var(--accent); }
+.reco-banner { display: flex; align-items: center; gap: var(--sp-3);
+  text-decoration: none; color: var(--ink); font-size: var(--fs-300); }
+
+/* ============================================================
+   7a · THEMENSEITE
+   Kopf und Reiter folgen den Tokens: Linie statt Verlauf,
+   Segmentleiste wie im Übungsteil.
+   ============================================================ */
+
+.breadcrumb { margin-bottom: var(--sp-4); }
+.breadcrumb a { display: inline-flex; align-items: center; gap: var(--sp-2);
+  min-height: var(--tap); text-decoration: none;
+  font: 500 var(--fs-300)/1 var(--font-text); color: var(--ink-2); }
+.breadcrumb a:hover { color: var(--accent); }
+
+.topic-head { display: flex; align-items: flex-start; gap: var(--sp-4);
+  margin-bottom: var(--sp-5); flex-wrap: wrap; }
+.topic-head .topic-icon-tile { min-width: 52px; height: 52px; border-radius: var(--r-2);
+  font-size: var(--fs-600); }
+.topic-head h1 { margin: 0; text-wrap: balance;
+  font: 600 var(--fs-800)/var(--lh-tight) var(--font-display); letter-spacing: var(--track-tight); }
+.topic-head .tagline { margin: var(--sp-1) 0 0; color: var(--ink-2); font-size: var(--fs-300); }
+.topic-head .head-right { margin-left: auto; text-align: right; }
+/* Feste Grundbreite für Titel und Unterzeile: Vorher entschied die Textlänge,
+   ob Sterne und Klasse neben dem Titel standen oder in eine eigene Zeile
+   rutschten (und auf dem Handy, ob der Titel neben oder unter die Kachel
+   fiel) – derselbe Kopf sah je Thema anders aus. */
+.topic-head .head-titel { flex: 1 1 12rem; }
+/* Ohne min-width: 0 – sonst schrumpft der Block unter sein längstes Wort und
+   „Wahrscheinlichkeit" ragte auf 320 px 14 px aus dem Fenster. So rutscht er
+   dort als Ganzes unter die Kachel. */
+.topic-head .stars { gap: 4px; }
+.topic-head .stars i { width: 10px; height: 10px; }
+.topic-head .klasse-badge { display: block; margin-top: var(--sp-2);
+  font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+
+/* Segmentleiste – dieselbe Bauform wie die Stufenwahl im Übungsteil. */
+.tabs { display: inline-flex; gap: 2px; padding: 3px; margin-bottom: var(--sp-5);
+  background: var(--surface-2); border-radius: var(--r-1); }
+.tab-btn { display: inline-flex; align-items: center; gap: var(--sp-2);
+  min-height: 40px; padding: 0 var(--sp-4); border: 0; border-radius: 6px;
+  background: none; color: var(--ink-2); cursor: pointer;
+  font: 500 var(--fs-300)/1 var(--font-text); }
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--e-1); }
+
+/* ============================================================
+   5 · ÜBEN
+   ============================================================ */
+.practice-bar { display: flex; flex-wrap: wrap; gap: var(--sp-3);
+  align-items: center; justify-content: space-between; margin-bottom: var(--sp-4); }
+.diff-chips { display: flex; gap: 2px; padding: 3px; background: var(--surface-2); border-radius: var(--r-1); }
+/* Der Entwurf nennt hier 32 px, sein eigener Prüfpunkt für diesen Schritt
+   verlangt aber 44 px. Mit Maus sind 40 px der Kompromiss – bequem zu treffen
+   und kompakt genug für eine Segmentleiste. Am Finger gilt die volle Vorgabe,
+   siehe die Regel für (pointer: coarse) weiter unten. */
+.chip { min-height: 40px; padding: 0 14px; border: 0; border-radius: 6px; background: none;
+  color: var(--ink-2); font: 500 var(--fs-200)/1 var(--font-text); cursor: pointer; }
+.chip.active { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--e-1); }
+.chip .dot { display: none; }   /* die Stufe steht im Wort */
+
+/* Sitzungsverlauf: ein Strich je Aufgabe statt ✔/✘-Zählern. */
+.session-stats { display: flex; gap: 4px; align-items: center; flex: 1; }
+.session-stats i { flex: 1; min-width: 6px; max-width: 34px; height: 3px;
+  border-radius: 2px; background: var(--surface-2); }
+.session-stats i.ok { background: var(--ok); }
+/* Höher als die anderen: Richtig und falsch dürfen sich nicht nur in der
+   Farbe unterscheiden. */
+.session-stats i.err { background: var(--err); height: 7px; }
+.session-stats .serie { margin-left: var(--sp-2); font: 500 var(--fs-100)/1 var(--font-text); color: var(--ink-3); }
+
+/* Die Aufgabe IST die Seite: keine Karte mehr. */
+.task-card { max-width: var(--measure); margin-inline: auto; padding: 0;
+  background: none; border: 0; box-shadow: none;
+  min-height: calc(100dvh - var(--h-header) - 140px);
+  display: flex; flex-direction: column; }
+.task-label { font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ink-3); }
+.task-question { margin: var(--sp-4) 0 var(--sp-6); text-wrap: pretty;
+  font: 600 var(--fs-900)/var(--lh-snug) var(--font-display); letter-spacing: var(--track-tight); }
+
+.answer-form { display: flex; flex-direction: column; gap: var(--sp-4); }
+.answer-input { width: 100%; min-height: 56px; padding: 0 2px;
+  border: 0; border-bottom: 2px solid var(--line-strong); border-radius: 0; background: none;
+  color: var(--ink); font: 500 var(--fs-700)/1.2 var(--font-display); }
+.answer-input::placeholder { color: var(--ink-3); font-weight: 400; }
+.answer-input:focus { outline: none; border-bottom-color: var(--accent); }
+
+.choice-grid { display: grid; grid-template-columns: 1fr; gap: var(--sp-2); }
+@media (min-width: 520px) { .choice-grid { grid-template-columns: 1fr 1fr; } }
+.choice-btn { display: flex; align-items: center; gap: var(--sp-3);
+  min-height: 56px; padding: var(--sp-3); text-align: left; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2);
+  color: var(--ink); font: 500 var(--fs-500)/1.2 var(--font-display); }
+.choice-btn:hover:not(:disabled) { border-color: var(--accent); }
+/* Deaktiviert heißt „nicht mehr anklickbar“, nicht „nicht mehr lesbar“:
+   Nach der Antwort lag der Text der richtigen Lösung bei 2,0:1. */
+.choice-btn:disabled { opacity: 1; color: var(--ink-2); cursor: default; }
+.choice-btn:disabled.is-correct { color: var(--ok-ink); border-color: var(--ok); background: var(--ok-soft); }
+.choice-btn:disabled.is-wrong { color: var(--err-ink); border-color: var(--err); background: var(--err-soft); }
+.choice-key { flex: none; width: 24px; height: 24px; display: grid; place-items: center;
+  border-radius: 6px; background: var(--surface-2); color: var(--ink-2);
+  font: 600 var(--fs-100)/1 var(--font-display); }
+.choice-btn.is-correct { border-color: var(--ok); background: var(--ok-soft); color: var(--ok-ink); }
+.choice-btn.is-correct .choice-key { background: var(--ok); color: var(--on-ok); }
+.choice-btn.is-wrong { border-color: var(--err); background: var(--err-soft); color: var(--err-ink); }
+
+/* Tipp und Rückmeldung: dasselbe Randnotiz-Muster wie im Lernteil. */
+.tipp-zone { margin-top: var(--sp-5); }
+.tipp-btn { min-height: var(--tap); padding: 0 var(--sp-3) 0 0; border: 0; background: none;
+  color: var(--ink-2); font: 500 var(--fs-300)/1 var(--font-text); cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--sp-2); }
+.tipp-text { margin: var(--sp-2) 0 0; padding-left: var(--sp-4);
+  border-left: 2px solid var(--accent); color: var(--ink-2); font-size: var(--fs-300); }
+
+.feedback { --notiz: var(--ok-ink); margin: var(--sp-5) 0 0;
+  padding: 2px 0 2px var(--sp-4); border-left: 2px solid var(--notiz); }
+.fb-head { font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--notiz);
+  display: flex; align-items: center; gap: var(--sp-2); }
+.fb-solution { margin: var(--sp-3) 0 0; color: var(--ink-2); font-size: var(--fs-300); }
+
+/* Aktionszeile sitzt am unteren Rand der Aufgabe – der Daumen findet sie dort.
+   Bewusst NICHT sticky: Auf niedrigen Fenstern zog das die Zeile nach oben und
+   legte sie über den Tipp-Knopf. „Prüfen“ steht ohnehin direkt unter dem Feld. */
+.next-row, .skip-row { margin-top: auto; padding-top: var(--sp-5);
+  display: flex; gap: var(--sp-2); }
+.next-row .btn { flex: 1; }
+.skip-btn { min-height: var(--tap); padding: 0 var(--sp-4); border: 1px solid var(--line-strong);
+  border-radius: var(--r-2); background: var(--surface); color: var(--ink-2);
+  font: 500 var(--fs-300)/1 var(--font-text); cursor: pointer; }
+
+/* --- Teile, die der Entwurf nicht nennt, das Markup aber erzeugt --------- */
+/* Lange Sachaufgaben (über ~110 Zeichen, siehe frageKlasse in app.js) zwei
+   Stufen kleiner: In --fs-900 wurden daraus sieben Zeilen à 40 px. */
+.task-question.lang { font-size: var(--fs-700); letter-spacing: 0; line-height: var(--lh-snug); }
+.task-question .hint { display: block; margin-top: var(--sp-3);
+  font: 400 var(--fs-200)/1.4 var(--font-text); color: var(--ink-3);
+  letter-spacing: 0; text-transform: none; }
+/* Zweite Chance: bewusst nicht rot – es ist kein Endergebnis, sondern ein Hinweis. */
+.feedback.err { --notiz: var(--err-ink); }
+.feedback.retry { --notiz: var(--accent); }
+/* Rückfrage bei unlesbarer Eingabe: kein Urteil, also weder grün noch rot. */
+.feedback.lesen { --notiz: var(--ink-2); }
+/* Fehlerart („Das Vorzeichen stimmt nicht.") – steht vor dem Tipp und der Lösung. */
+.feedback .fb-diagnose { margin: var(--sp-3) 0 0; font-size: var(--fs-300); font-weight: 600; color: var(--ink); }
+/* Rückfrage nach einem gewerteten Versuch: unter der Diagnose, nicht als Urteil */
+.feedback .fb-rueckfrage { font-weight: 500; color: var(--ink-2); }
+.feedback .fb-answer { margin: var(--sp-3) 0 0; font-size: var(--fs-400); }
+.feedback .fb-tipp { margin: var(--sp-3) 0 0; color: var(--ink-2); font-size: var(--fs-300); }
+.feedback .fb-solution .sol-title { display: block; margin-bottom: var(--sp-1);
+  font-weight: 600; color: var(--ink); }
+.feedback details { margin-top: var(--sp-3); }
+.feedback summary { cursor: pointer; min-height: var(--tap); display: flex; align-items: center;
+  color: var(--ink-2); font: 500 var(--fs-300)/1 var(--font-text); }
+.feedback .xp-pop { display: inline-block; padding: 2px var(--sp-2); border-radius: var(--r-pill);
+  background: var(--accent-soft); color: var(--accent);
+  font: 600 var(--fs-100)/1.4 var(--font-text); letter-spacing: 0; text-transform: none; }
+.feedback .next-row { position: static; margin-top: var(--sp-4); padding-top: 0; flex-wrap: wrap; }
+.feedback .next-row .btn { flex: none; text-decoration: none; }
+.skip-row { justify-content: flex-start; }
+.skip-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+.task-card.shake { animation: shake .4s ease; }
+
+@keyframes pop-in { from { opacity: 0; transform: scale(.96) translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes rise  { from { opacity: 0; transform: translateY(10px) scale(.8); }  to { opacity: 1; transform: none; } }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+/* ============================================================
+   6 · GLOBAL
+   ============================================================ */
+.btn { min-height: var(--tap); display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--sp-2); padding: 0 var(--sp-5); cursor: pointer;
+  border: 1px solid transparent; border-radius: var(--r-2);
+  font: 600 var(--fs-300)/1 var(--font-display);
+  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease); }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: color-mix(in oklab, var(--accent) 88%, black); }
+.btn-ghost { background: none; border-color: var(--line-strong); color: var(--ink-2); }
+.btn-ghost:hover { border-color: var(--ink-3); color: var(--ink); }
+.btn-danger { background: none; border-color: var(--err); color: var(--err-ink); }
+
+/* Ein Fokusstil für alles – sichtbar auf jeder Fläche, auch auf --accent. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.btn-primary:focus-visible { outline-color: var(--ink); }
+
+/* Sterne: Rauten statt ⭐ – einfärbbar, überall gleich groß. */
+.stars { display: inline-flex; gap: 3px; }
+.stars i { width: 8px; height: 8px; rotate: 45deg; border-radius: 1px;
+  background: none; box-shadow: inset 0 0 0 1px var(--line-strong); }
+/* Fallback, falls die Sterne außerhalb eines .g-*-Bereichs stehen. */
+.stars i.voll { background: var(--stufe, var(--accent)); box-shadow: none; }
+
+/* Grundstellung ausgeblendet und etwas tiefer; .show fährt sie hoch.
+   Vorher setzte die Grundstellung translate und .show zusätzlich transform –
+   beide wirken kumulativ, die Meldung stand um ihre ganze Breite versetzt. */
+.toast { position: fixed; left: 50%; bottom: calc(var(--h-tabbar) + var(--sp-4));
+  translate: -50% 20px; opacity: 0; z-index: 40; padding: var(--sp-3) var(--sp-5);
+  background: var(--ink); color: var(--bg); border-radius: var(--r-pill);
+  box-shadow: var(--e-2); font: 500 var(--fs-300)/var(--lh-snug) var(--font-text);
+  /* Ein fest positioniertes Element bei left: 50 % schrumpft auf die halbe
+     Fensterbreite – auf 375 px brach „Stand gesichert" in zwei, drei Zeilen,
+     die bei Zeilenhöhe 1 aufeinander standen. */
+  width: max-content; max-width: min(var(--measure), 100vw - 2 * var(--sp-4)); text-align: center;
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease), translate var(--dur-2) var(--ease); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- Mathe-Darstellung ---------- */
+
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  /* stretch: Zähler und Nenner werden gleich breit, der Bruchstrich reicht
+     über den breiteren – vorher schwebte ein kurzer Strich über „2√(3x + 3)".
+     Der senkrechte Rand hält Brüche aufeinanderfolgender Zeilen auseinander
+     (Nenner und Zähler lagen 3–5 px voneinander), der schmalere waagerechte
+     nimmt die Lücke vor „," und „." zurück. */
+  align-items: stretch; text-align: center;
+  margin: 0.2em 0.1em;
+  line-height: 1.15;
+  font-size: 0.92em;
+}
+.frac .num { border-bottom: 2px solid currentColor; padding: 0 0.32em 0.08em; }
+.frac .den { padding: 0.08em 0.32em 0; }
+
+/* Spaltenvektor für die analytische Geometrie. Es gibt keine Mathe-Bibliothek,
+   also entstehen die Klammern aus zwei Seitenlinien mit stark elliptischem
+   Radius – dadurch biegen sie sich wie gesetzte Klammern. Oben und unten hat
+   der Rahmen bewusst keine Linie, sonst stünde dort ein Kasten. */
+.vek {
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0.25em 0.14em;   /* senkrecht: zwei Vektorzeilen stießen Klammer an Klammer */
+  padding: 0.14em 0.4em;
+  line-height: 1.22;
+  font-size: 0.92em;
+  font-variant-numeric: tabular-nums;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-radius: 0.6em / 1.4em;
+}
+
+/* Pfeil über einem Vektornamen. Das kombinierende Zeichen U+20D7 setzen längst
+   nicht alle Schriften – „→" hoch- und kleingestellt tut es überall. */
+.vpfeil { position: relative; white-space: nowrap; }
+.vpfeil::after {
+  content: "→";
+  position: absolute;
+  left: 50%;
+  top: -0.62em;
+  transform: translateX(-50%);
+  font-size: 0.6em;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+sup { font-size: 0.68em; }
+sub { font-size: 0.68em; }
+
+/* ============================================================
+   7b · STATISTIK, FORMELN, CHALLENGE
+   Kein eigener Entwurf im Umsetzungsdokument – diese drei
+   Ansichten folgen den Tokens: Karten verlieren den Schatten,
+   Kacheln werden zu Zeilen mit Linie, angehoben ist nichts.
+   ============================================================ */
+
+.section-title { margin: var(--sp-7) 0 var(--sp-4);
+  font: 600 var(--fs-700)/var(--lh-tight) var(--font-display); letter-spacing: var(--track-tight); }
+h1.section-title { font-size: var(--fs-800); }
+.section-title .icon { vertical-align: -3px; margin-right: var(--sp-2); color: var(--ink-3); }
+.section-title:first-child { margin-top: var(--sp-5); }
+
+/* Kennzahlen: eine Reihe schmaler Felder, nur durch Linien getrennt. */
+/* Es sind immer genau sechs Felder. auto-fill ergab bei mittleren Breiten
+   fünf Spalten und ließ das sechste allein in einer zweiten Zeile stehen.
+   2, 3 und 6 teilen die Sechs auf – so bleibt keine Zeile angebrochen. */
+.stat-tiles { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-6);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 560px)  { .stat-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1060px) { .stat-tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.stat-tile { padding: var(--sp-4); text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2); }
+.stat-tile .value { font: 600 var(--fs-700)/1 var(--font-display); letter-spacing: var(--track-tight); }
+.stat-tile .label { margin-top: var(--sp-1); color: var(--ink-3); font-size: var(--fs-100); }
+/* Die Levelkachel ist das einzige hervorgehobene Feld der Seite. */
+.stat-tile.tile-accent { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+html[data-theme="dark"] .stat-tile.tile-accent { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+/* Auf der dunklen Kachel braucht die Beschriftung einen hellen gedämpften
+   Ton – --ink-3 ist für helle Flächen gedacht und käme hier auf 3,3:1.
+   Derselbe Wert wie im Challenge-Band, dort mit 6,7:1 gemessen. */
+.stat-tile.tile-accent .label { color: #9aa3b5; }
+html[data-theme="dark"] .stat-tile.tile-accent .label { color: var(--ink-3); }
+.ring { width: 46px; height: 46px; margin-bottom: var(--sp-2); }
+.ring-bg { fill: none; stroke: currentColor; opacity: .22; stroke-width: 6; }
+.ring-fg { fill: none; stroke: currentColor; stroke-width: 6; stroke-linecap: round;
+  transform: rotate(-90deg); transform-origin: center;
+  transition: stroke-dashoffset .8s var(--ease); }
+
+/* Woche: sieben Spalten, keine Karte. */
+/* Volle Spaltenbreite: Mit max-width 420px stand die Karte in einer 890 px
+   breiten Spalte und ließ die rechte Hälfte der Zeile leer – die Woche sah aus
+   wie ein Rest, nicht wie ein Abschnitt. Die Kästchen wachsen mit. */
+.week-card { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--sp-3); margin-bottom: var(--sp-6);
+  padding: var(--sp-4); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-2); }
+.week-day { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); min-width: 0; }
+/* --ink-3 ist für Etiketten gedacht und kam auf --surface-2 nur auf 4,42:1.
+   In diesen Kästchen stehen aber Messwerte, keine Beschriftungen. */
+.week-count { display: grid; place-items: center; width: 100%; max-width: 72px; aspect-ratio: 1;
+  border-radius: var(--r-1); background: var(--surface-2); color: var(--ink-2);
+  font: 600 var(--fs-200)/1 var(--font-display); }
+.week-day.active .week-count { background: var(--accent); color: var(--on-accent); }
+.week-label { font: 500 var(--fs-50)/1 var(--font-text); color: var(--ink-3); }
+
+/* Themenliste: Zeilen mit Trennlinie statt 33 Karten. */
+.stat-rows { display: flex; flex-direction: column; }
+.stat-row { display: grid; grid-template-columns: 44px 1fr auto; gap: var(--sp-1) var(--sp-3);
+  align-items: center; padding: var(--sp-3) 0; border-bottom: 1px solid var(--line); }
+.stat-row .topic-icon-tile { min-width: 36px; height: 36px; grid-row: span 2; font-size: var(--fs-200); }
+.stat-row h3 { margin: 0; font: 600 var(--fs-300)/var(--lh-snug) var(--font-display); }
+.stat-row .numbers { grid-column: 2; color: var(--ink-3); font-size: var(--fs-100); }
+.stat-row .stars { grid-column: 3; grid-row: 1; justify-self: end; }
+.stat-row .quote { grid-column: 3; grid-row: 2; justify-self: end;
+  font: 600 var(--fs-200)/1 var(--font-display); color: var(--ink-2); }
+.stat-row .row-bar { grid-column: 1 / 4; margin-top: var(--sp-2); }
+
+/* Abzeichen: die Belohnung darf bunt bleiben, der Rahmen wird ruhig. */
+/* Es sind immer genau 16 Abzeichen. auto-fill ergab fünf Spalten und ließ das
+   sechzehnte allein in einer vierten Zeile stehen – dieselbe Waise wie bei den
+   sechs Kennzahlen, nur unbemerkt geblieben. 2 und 4 teilen die Sechzehn auf. */
+.badge-grid { display: grid; gap: var(--sp-2); margin-bottom: var(--sp-5);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 620px) { .badge-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.badge-card { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-3);
+  text-align: center; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-2); }
+.badge-card .badge-icon { font-size: 1.5rem; line-height: 1.4; }
+.badge-card .badge-name { font: 600 var(--fs-200)/1.3 var(--font-display); }
+.badge-card .badge-desc { color: var(--ink-3); font-size: var(--fs-50); line-height: 1.4; }
+/* Vorher: opacity .5 auf der ganzen Karte – die Beschreibung landete damit
+   bei 2,06:1. Gesperrt erkennt man jetzt am gestrichelten Rand, der
+   zurückgenommenen Fläche und dem blassen Schloss; der Text bleibt lesbar. */
+.badge-card.locked { border-style: dashed; background: none; }
+.badge-card.locked .badge-icon { opacity: .55; }
+.badge-card.locked .badge-name { color: var(--ink-2); }
+
+.stats-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-5) 0; }
+.stats-actions .btn { text-decoration: none; }
+.sicherung-hinweis { max-width: 60ch; margin: 0 0 var(--sp-3); color: var(--ink-2); font-size: var(--fs-300); }
+.danger-zone { margin-top: var(--sp-6); padding-top: var(--sp-5); border-top: 1px solid var(--line); }
+.empty-hint { padding: var(--sp-6); text-align: center; color: var(--ink-2);
+  background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r-2); }
+
+/* Formelsammlung: Karten ohne Schatten, Formeln auf eingesenkter Fläche. */
+.formel-intro { max-width: 60ch; margin: 0 0 var(--sp-5); color: var(--ink-2); font-size: var(--fs-300); }
+.formel-grid { display: grid; gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.formel-karte { display: block; padding: var(--sp-4); text-decoration: none; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2); }
+.formel-karte:hover { border-color: var(--stufe); }
+.formel-kopf { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.formel-icon { display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 30px; padding-inline: 5px; border-radius: var(--r-1);
+  background: var(--stufe-soft); color: var(--stufe);
+  font: 600 var(--fs-200)/1 var(--font-display); }
+.formel-karte h3 { margin: 0; font: 600 var(--fs-300)/var(--lh-snug) var(--font-display); }
+.formel-karte ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
+.formel-karte li { padding: var(--sp-2) var(--sp-3); border-radius: var(--r-1);
+  background: var(--surface-2); font-size: var(--fs-200); overflow-x: auto; }
+
+/* Challenge und Training: dieselbe ruhige Bühne wie der Übungsteil. */
+.challenge-wrap { max-width: var(--measure); margin-inline: auto; }
+.challenge-head { margin-bottom: var(--sp-5); }
+.challenge-head h1 { margin: 0 0 var(--sp-2); text-wrap: balance;
+  font: 600 var(--fs-800)/var(--lh-tight) var(--font-display); letter-spacing: var(--track-tight); }
+.challenge-head .tagline { margin: 0 0 var(--sp-4); color: var(--ink-2); font-size: var(--fs-300); }
+.challenge-wrap .ch-dots { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-5); }
+.challenge-wrap .ch-dot { width: 100%; max-width: 44px; height: 4px; border-radius: 2px;
+  background: var(--surface-2); }
+.challenge-wrap .ch-dot.dot-now { background: var(--accent); }
+.challenge-wrap .ch-dot.dot-ok { background: var(--ok); }
+.challenge-wrap .ch-dot.dot-err { background: var(--err); }
+.challenge-result { text-align: center; padding: var(--sp-7) 0; }
+.challenge-result .result-emoji { font-size: 2.6rem; line-height: 1; }
+.challenge-result h1 { margin: var(--sp-4) 0 var(--sp-2); }
+.challenge-result .result-score { margin: 0; font: 600 var(--fs-500)/1.3 var(--font-display); }
+.challenge-result .result-note { margin: var(--sp-3) 0 0; color: var(--ink-2); font-size: var(--fs-300); }
+.challenge-result .next-row { justify-content: center; flex-wrap: wrap; margin-top: var(--sp-5); }
+.challenge-result .btn { text-decoration: none; }
+
+.toast.show { opacity: 1; translate: -50% 0; }
+
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 150; overflow: hidden; }
+.confetti i {
+  position: absolute;
+  top: -16px;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(660deg); opacity: 0; }
+}
+
+/* ---------- Scrollbar (dezent) ---------- */
+
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+  border: 3px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+
+/* ---------- Reduzierte Bewegung ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    /* Ohne diese Zeile scrollten Kapitelsprünge und Seitenwechsel weiterhin
+       weich – für empfindliche Nutzerinnen und Nutzer der störendste Teil. */
+    scroll-behavior: auto !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* Zwei Leisten sind aus Platzgründen kompakter als der Rest: die Stufenfilter
+   auf der Startseite und die Segmentleiste im Übungsmodus. Am Finger bekommen
+   sie trotzdem die vollen --tap. (pointer: coarse) statt einer Breitenabfrage,
+   weil ein Tablet im Querformat breit ist und trotzdem angetippt wird. */
+@media (pointer: coarse) {
+  .stufen-filter button, .chip { min-height: var(--tap); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  /* Die Frage ist das Wichtigste der Karte und darf nicht kleiner stehen als
+     die Eingabe darunter (--fs-700); lange Sachaufgaben eine Stufe darunter. */
+  .task-question { font-size: var(--fs-700); }
+  .task-question.lang { font-size: var(--fs-500); }
+  /* flex-basis statt width: width wird von flex-basis: 0% geschlagen. */
+  .session-stats { margin-left: 0; flex-basis: 100%; }
+  .answer-form .btn { width: 100%; }
+  /* Passen zwei Knöpfe nicht nebeneinander, stapeln sie sich – dann gleich
+     breit statt ausgefranst in ihrer Inhaltsbreite. */
+  .feedback .next-row .btn { flex: 1 1 auto; }
+  .answer-input { width: 100%; }
+  .group-head h2 { font-size: 1.15rem; }
+  .stat-row { grid-template-columns: 44px 1fr; }
+  .stat-row .topic-icon-tile { grid-row: 1; }
+  .stat-row h3 { grid-row: 1; }
+  .stat-row .stars, .stat-row .quote, .stat-row .numbers { grid-column: 2; grid-row: auto; text-align: left; }
+  .stat-row .row-bar { grid-column: 1 / 3; grid-row: auto; }
+}
+
+/* ============================================================
+   Design-Politur 2.1 – Tiefe, Micro-Interactions, Scroll-Reveal
+   ============================================================ */
+
+/* Sanfte Seitenübergänge (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 0.22s; }
+
+/* Header bekommt beim Scrollen Tiefe */
+.site-header { transition: box-shadow 0.25s ease; }
+.site-header.scrolled { box-shadow: 0 10px 32px rgba(23, 32, 64, 0.10); }
+html[data-theme="dark"] .site-header.scrolled { box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5); }
+
+
+/* Themen-Gruppen erst beim Scrollen einblenden */
+.topic-group.reveal { animation: none; }
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* Footer zentriert */
+.site-footer { text-align: center; }
+
+/* ============================================================
+   4 · ERKLÄRSEITE
+   Acht Bausteine, drei visuelle Mittel:
+     Linie am Rand → Einstieg, Herleitung, Achtung, Selbstcheck
+     Fläche        → Merksatz, Formel
+     Nummer        → Verfahren (Schritte), Beispiele
+   ============================================================ */
+.learn-content { max-width: var(--measure); margin-inline: auto; hyphens: auto; }
+.learn-content h2 { margin: var(--sp-7) 0 var(--sp-3); text-wrap: balance;
+  font: 600 var(--fs-700)/var(--lh-tight) var(--font-display); letter-spacing: var(--track-tight); }
+.learn-content h3 { margin: var(--sp-6) 0 var(--sp-2); text-wrap: balance;
+  font: 600 var(--fs-600)/var(--lh-snug) var(--font-display); }
+.learn-content p { margin: 0 0 var(--sp-4); text-wrap: pretty; }
+.learn-content strong { font-weight: 600; }
+
+/* --- Mittel 1: Randnotiz ------------------------------------
+   Kein Rahmen, kein Hintergrund, keine Rundung – nur eine Linie
+   und ein Etikett. Vier Bausteine, die sich nur in der Farbe
+   und im Wort unterscheiden. */
+.einstieg-box, .herleitung-box, .achtung-box, .selbstcheck {
+  --notiz: var(--stufe);
+  margin: var(--sp-5) 0; padding: 2px 0 2px var(--sp-4);
+  background: none; border: 0; border-left: 2px solid var(--notiz); border-radius: 0;
+}
+.achtung-box   { --notiz: var(--err-ink); }
+.selbstcheck   { --notiz: var(--ok-ink); }
+
+/* Selbstkontrolle: 100 Fragen auf 33 Seiten. Ohne diese Regeln stehen Frage
+   und Antwort in derselben Schrift, ohne Trennung und ohne Klickhinweis –
+   man sieht nicht mehr, was die Frage und was die Auflösung ist.
+   Der native Marker bleibt: Er ist das einzige Signal für „auf/zu“. */
+.selbstcheck details { border-top: 1px solid var(--line); }
+.selbstcheck details:first-of-type { border-top: 0; }
+.selbstcheck summary {
+  cursor: pointer;
+  padding: var(--sp-3) 0;          /* 12 + 25,6 + 12 = 49,6 px, über --tap */
+  font-weight: 600; color: var(--ink);
+  /* Hängender Marker: Bricht die Frage um, begann die zweite Zeile unter dem
+     Dreieck statt unter dem Text. */
+  list-style-position: outside; margin-left: 1.1em;
+}
+.selbstcheck summary::marker { color: var(--notiz); }
+.selbstcheck summary:hover { color: var(--notiz); }
+.selbstcheck details > p {
+  margin: 0 0 var(--sp-3); padding: var(--sp-3);
+  background: var(--surface-2); border-radius: var(--r-2);
+  color: var(--ink-2); line-height: 1.7;
+}
+
+/* Etiketten: Der Bestand bringt in allen vier Bausteinen eine eigene
+   Titelzeile mit (99x .box-title, 33x .achtung-title) – und die ist besser als
+   ein generisches Wort, weil sie eine echte Frage stellt („Warum entsteht eine
+   Potenz?“). Deshalb keine ::before-Etiketten, sondern der vorhandene Titel im
+   Etikettenstil. Nur .achtung-title ist überall derselbe kurze Ausdruck und
+   verträgt Versalien. */
+.einstieg-box .box-title, .herleitung-box .box-title, .selbstcheck .box-title {
+  display: block; margin-bottom: var(--sp-2);
+  font: 600 var(--fs-300)/var(--lh-snug) var(--font-display); color: var(--notiz);
+}
+.achtung-box .achtung-title {
+  display: block; margin-bottom: var(--sp-2);
+  font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--notiz);
+}
+/* Die Emoji der alten Fassung entfallen – die Linie trägt die Bedeutung. */
+.einstieg-box .box-title::before, .herleitung-box .box-title::before,
+.selbstcheck .box-title::before, .achtung-box .achtung-title::before,
+.merkkasten .merk-title::before { content: none; }
+
+/* Die Leitfrage ist der Kern des Einstiegs und darf hervortreten. */
+.einstieg-box .frage { display: block; margin-top: var(--sp-3);
+  font: 600 var(--fs-500)/var(--lh-snug) var(--font-display); color: var(--ink); }
+
+/* --- Mittel 2: Fläche --------------------------------------- */
+.merkkasten { margin: var(--sp-5) 0; padding: var(--sp-5);
+  background: var(--stufe-soft); border: 0; border-radius: var(--r-3); }
+.merkkasten > :last-child { margin-bottom: 0; }
+/* Die zehn Merkkästen der jüngeren Themen tragen ihren Titel als p.box-title
+   („Die beiden Strahlensätze") statt als span.merk-title. Ohne die zweite
+   Zeile hier stand er als gewöhnlicher Absatz da – auf derselben Fläche, auf
+   der alle übrigen Kästen ein Etikett zeigen. */
+.merk-title, .merkkasten .box-title { display: block; margin-bottom: var(--sp-2);
+  font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--stufe); }
+/* Eine Formel ist eine Fläche, steht aber als <span> im Absatz – oft mitten im
+   Satz. Als reines Inline-Element verschob ihr Innenabstand keine Zeile: Der
+   Hintergrund lag 7 bis 11 px über der Zeile darüber, in 20 Merkkästen über dem
+   Titel „Merke", und brach die Formel um, deckte ihr zweites Stück den
+   Satzanfang zur Hälfte zu. inline-block nimmt die Fläche in die Zeilenhöhe auf
+   und lässt sie nur als Ganzes umbrechen. middle statt baseline, weil ein
+   Block mit overflow seine Grundlinie an die Unterkante legt – die Formel
+   stünde sonst über der Zeile. Geprüft von design/pruefung/ueberdeckung.js. */
+.formula { display: inline-block; max-width: 100%; vertical-align: middle; hyphens: manual;
+  margin: var(--sp-1) 0; padding: var(--sp-4); overflow-x: auto; text-align: center;
+  background: var(--surface-2); border-radius: var(--r-2);
+  font: 500 var(--fs-500)/1.5 var(--font-display); }
+/* Rahmen, den app.js (bindeBrueche) um Rechenzeichen und folgenden Bruch legt. */
+/* Im Dunkeln liegt --stufe-soft (9 % Stufenfarbe auf --surface) fast genau auf
+   --surface-2: Die Formelfläche im Merkkasten verschwand (gemessen 1–2
+   Farbstufen Abstand). Dort sinkt sie deshalb auf den Seitengrund. */
+html[data-theme="dark"] .merkkasten .formula { background: var(--bg); }
+.bindung { white-space: nowrap; }
+/* x̄: Das kombinierende Makron (U+0304) setzt die Anzeigeschrift nicht – der
+   Strich stand rechts oben neben dem x und las sich als „x⁻". setzeFormeln
+   macht daraus diesen Span, der Strich ist eine Überstreichung. */
+.quer { text-decoration: overline; text-decoration-thickness: 0.07em; }
+/* Mathe in Versal-Etiketten bleibt, wie sie ist: „SCHEITELSTELLE AUS AX² + BX
+   + C" machte aus den Variablen a, b, c andere Größen. */
+.mathe { text-transform: none; letter-spacing: 0; }
+/* Die Bruchdarstellung des Projekts (.num/.den) bleibt unverändert –
+   sie steht weiter oben im Abschnitt „Mathe-Darstellung“. */
+
+/* --- Mittel 3: Nummer --------------------------------------- */
+.schritte { counter-reset: schritt; list-style: none; margin: var(--sp-5) 0; padding: 0; }
+.schritte > li { counter-increment: schritt; position: relative;
+  padding-left: var(--sp-6); margin-bottom: var(--sp-3); }
+.schritte > li::before { content: counter(schritt); position: absolute; left: 0; top: 2px;
+  width: 24px; height: 24px; display: grid; place-items: center; border-radius: var(--r-1);
+  background: var(--stufe-soft); color: var(--stufe);
+  font: 600 var(--fs-100)/1 var(--font-display); }
+
+.example-box { margin: var(--sp-5) 0; padding: var(--sp-4) 0 0;
+  background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; }
+/* Zeile mit „Beispiel 3 · Kreis“. Ohne display:block klebte sie am ersten
+   Absatz des Beispiels – 102-mal in den Erklärseiten. */
+/* flex mit Grundlinie: Bricht ein langer Name um, läuft die zweite Zeile unter
+   dem Namen weiter statt zurück unter das Etikett „BEISPIEL 3". */
+.ex-title { display: flex; align-items: baseline; margin-bottom: var(--sp-2); }
+/* Trennt zwei eigenständige Formeln in einer Zeile. Vorher stand hier ein
+   Malpunkt mit denselben Abständen wie der echte Malpunkt daneben – als Kette
+   gelesen ergab „E(X) = 5 · E(X²) = 34“ die Behauptung 5 = 170. */
+.trenn { color: var(--ink-3); font-weight: 400; user-select: none; }
+.ex-num { font: 600 var(--fs-50)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--stufe); }
+.ex-name { flex: 1; margin-left: var(--sp-2); font: 500 var(--fs-300)/var(--lh-snug) var(--font-text); color: var(--ink-2); }
+
+/* --- Beiwerk ------------------------------------------------ */
+.table-wrap { margin: var(--sp-5) 0; overflow-x: auto;
+  border: 1px solid var(--line); border-radius: var(--r-2); }
+.table-wrap table { width: 100%; border-collapse: collapse; font-size: var(--fs-300); }
+.table-wrap th, .table-wrap td { padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--line); text-align: left;
+  /* Keine Silbentrennung in Zellen: Die automatische Tabellenbreite nutzte sie,
+     um Spalten zu quetschen („GRÖS-SE", „FLÄCHENIN-HALT" bei Zeilenhöhe 1).
+     Ist die Tabelle zu breit, rollt ihr Rahmen – dafür ist .table-wrap da. */
+  hyphens: manual; }
+.table-wrap th { font: 600 var(--fs-100)/1 var(--font-text);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ink-3); }
+/* ---------- Illustrationen ----------
+   Die 33 Inline-SVGs tragen keine eigenen Farben: Sie erben --ink und --stufe
+   von der Erklärseite und wechseln damit hell/dunkel und Klassenstufe mit.
+   Ohne diese Regeln zeichnen alle Figuren schwarz. */
+
+.fig-wrap {
+  margin: var(--sp-5) 0;
+  padding: var(--sp-5) var(--sp-4) var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-3);
+  text-align: center;
+}
+.fig { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; overflow: visible; }
+.fig-cap {
+  margin: 12px auto 0;
+  max-width: 520px;
+  text-align: center;
+  font-size: var(--fs-200);
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.fig-shape { fill: var(--stufe-soft); stroke: var(--stufe); stroke-width: 2.5; stroke-linejoin: round; }
+.fig-shape.is-filled { fill: var(--stufe); fill-opacity: 0.55; }
+.fig-shape.is-top { fill: var(--stufe); fill-opacity: 0.22; }
+.fig-shape.is-side { fill: var(--stufe); fill-opacity: 0.34; }
+.fig-axis, .fig-grid-line { stroke: var(--ink-3); stroke-width: 1.6; fill: none; }
+.fig-axis-head { fill: var(--ink-3); }
+.fig-grid { fill: none; stroke: var(--ink-3); stroke-width: 1.6; }
+.fig-cell { fill: var(--stufe); fill-opacity: 0.16; }
+.fig-curve { fill: none; stroke: var(--stufe); stroke-width: 3; stroke-linecap: round; }
+/* Vergleichskurve im Hintergrund – etwa die Normalparabel neben der verschobenen.
+   Ohne diese Regel zeichnen beide in derselben Farbe und Stärke, und die Figur
+   zeigt zwei gleich wichtige Kurven statt Bezug und Ergebnis. */
+.fig-curve.is-muted { stroke: var(--ink-3); stroke-width: 2.2; }
+.fig-tangent { stroke: var(--err); stroke-width: 2.4; stroke-linecap: round; }
+.fig-line-2 { stroke: var(--ink-3); stroke-width: 2.2; stroke-dasharray: 1 0; }
+.fig-area { fill: var(--stufe); fill-opacity: 0.2; stroke: none; }
+.fig-dash { stroke: var(--ink-3); stroke-width: 1.6; stroke-dasharray: 5 4; fill: none; }
+.fig-arc { fill: none; stroke: var(--stufe); stroke-width: 2.2; }
+.fig-right-angle { fill: none; stroke: var(--ink-3); stroke-width: 2; }
+.fig-tri { fill: none; stroke: var(--stufe); stroke-width: 2.2; stroke-dasharray: 5 4; }
+.fig-branch { stroke: var(--stufe); stroke-width: 2.2; stroke-linecap: round; }
+.fig-dot { fill: var(--stufe); }
+.fig-arrow { fill: var(--stufe); }
+.fig-bar { fill: var(--ink-3); opacity: 0.45; rx: 3; }
+.fig-bar.is-accent { fill: var(--stufe); opacity: 1; }
+.fig-whisker { stroke: var(--ink-3); stroke-width: 2.2; }
+.fig-median { stroke: var(--stufe); stroke-width: 4; }
+.fig-frac-line { stroke: var(--ink); stroke-width: 2.4; }
+.fig-label { font-family: var(--font-text); font-size: 13px; font-weight: 600; fill: var(--ink); }
+.fig-label.is-accent { fill: var(--stufe); font-weight: 800; }
+.fig-label.is-muted { fill: var(--ink-3); font-weight: 600; }
+.fig-big { font-family: var(--font-display); font-size: 26px; font-weight: 700; fill: var(--ink); }
+
+@media (max-width: 640px) {
+  .fig-wrap { padding: 14px 8px 8px; }
+  .learn-toc { padding: 12px; }
+}
+
+/* Zusätzliche Elemente der Illustrationen */
+/* Feste Farbe ersetzt: Weiß auf --stufe erreicht im Dunkelmodus (#3fbf9a) nur 2,3:1.
+   var(--surface) ist hell #ffffff (unverändert) und dunkel #1a1e26 → 7,3:1. */
+.fig-num { font-family: var(--font-display); font-size: 15px; font-weight: 800; fill: var(--surface); }
+.fig-huge { font-family: var(--font-display); font-size: 54px; font-weight: 700; fill: var(--ink); }
+.fig-big.is-accent { fill: var(--stufe); }
+.fig-ball-a { fill: var(--stufe); }
+.fig-ball-b { fill: var(--ink-3); opacity: 0.4; }
+.fig-label .is-accent, .fig-label tspan.is-accent { fill: var(--stufe); font-weight: 800; }
+
+/* Kapitelmenü: Zeilen, kein Kasten. */
+.learn-toc { display: flex; flex-direction: column; margin: var(--sp-5) 0;
+  border-top: 1px solid var(--line); }
+.learn-toc a { hyphens: manual; padding: var(--sp-3) 0; border-bottom: 1px solid var(--line);
+  text-decoration: none; color: var(--ink-2); font-size: var(--fs-300); }
+.learn-toc a:hover { color: var(--accent); }
+
+.learn-cta { margin: var(--sp-7) 0 0; padding-top: var(--sp-5); border-top: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; }
+.learn-cta .cta-text { flex: 1; min-width: 15rem; margin: 0; color: var(--ink-2);
+  font-size: var(--fs-300); }
+
+/* ============================================================
+   Druckansicht – Erklärseiten als Handout
+   ============================================================ */
+
+@media print {
+  .site-header, .site-footer, .tabs, .learn-cta, .learn-toc,
+  .practice-bar, .skip-row, .tipp-zone, .breadcrumb, .theme-toggle,
+  /* neu im Redesign: Tab-Leiste, XP-Linie und die Bedienelemente der Startseite */
+  .tabbar, .xp-line, .stufen-filter, .serie-zeile, .challenge-band,
+  .weiter-zeile, .reco-zeile, .search-row { display: none !important; }
+  body { background: #fff; color: #000; display: block; }
+  body::before, body::after { display: none; }
+  main.container { padding: 0; max-width: none; }
+  .learn-content {
+    max-width: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+    animation: none;
+  }
+  .topic-head { margin-bottom: 12pt; }
+  .topic-head .topic-icon-tile { box-shadow: none; }
+  .learn-content h2 { font-size: 17pt; }
+  .learn-content h3 { font-size: 13pt; page-break-after: avoid; }
+  .example-box, .merkkasten, .achtung-box, .einstieg-box,
+  .herleitung-box, .selbstcheck, .fig-wrap, table { page-break-inside: avoid; }
+  .fig-wrap { background: none; padding: 6pt 0; }
+  .selbstcheck details { page-break-inside: avoid; }
+  .selbstcheck details > p { display: block !important; }
+  a { text-decoration: none; color: inherit; }
+}
+
+/* ============================================================
+   Empfehlungszeile
+   Formelsammlung und Statistik-Aktionen stehen jetzt in 7b.
+   ============================================================ */
+
+.reco-zeile .reco-banner { flex: 1; min-width: 240px; }
+.reco-training { white-space: nowrap; text-decoration: none; }
+
+@media print {
+  .formel-karte { break-inside: avoid; box-shadow: none; }
+  /* Auf dem Ausdruck blieben Überschrift, Hinweistext und der rote Knopf
+     „Fortschritt zurücksetzen" stehen, während die zugehörigen Bedienelemente
+     verschwanden – eine Aufforderung zu etwas, das auf Papier nicht geht. */
+  .formel-intro, .stats-actions, .sicherung-hinweis,
+  .danger-zone, .sichern-titel { display: none; }
+}
+
+/* ============================================================
+   Barrierefreiheit
+   ============================================================ */
+
+/* Der Sprunglink steht in Abschnitt 2. Bewusst ohne Animation:
+   Er muss sofort erscheinen, auch wenn Animationen gedrosselt sind. */
+
+#app:focus { outline: none; }
+
+
+
+/* Platzhalter, bis app.js die erste Ansicht gezeichnet hat */
+.lade-hinweis { color: var(--ink-3); padding: var(--sp-8) 0; text-align: center; }
+/* Wer JavaScript aus hat, sieht sonst nur einen unformatierten Satz unter der
+   leeren Fußzeile. Der Hinweis ist die einzige Ansage, die dann noch trägt. */
+.noscript-hint { margin: var(--sp-8) auto; padding: var(--sp-5); max-width: var(--measure);
+  border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface-2);
+  text-align: center; font-size: var(--fs-500); color: var(--ink); }
+
+
+/* Trefferflächen für Finger vergrößern – negative Margins halten das Layout stabil */
+.breadcrumb a {
+  display: inline-block;
+  padding: 12px 6px;
+  margin: -12px -6px;
+}
+/* .skip-btn braucht den Trick nicht: Er hat schon min-height: var(--tap) –
+   mit Rahmen ragte er 6 px aus der Spalte, und die Schrift klebte am Rand. */
+
+/* ============================================================
+   Lesetypografie – ruhiger Satz für längeres Lesen
+   ============================================================ */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Tabellenziffern nur dort, wo Zahlen untereinanderstehen sollen –
+     im Fließtext stören sie den Rhythmus. */
+  font-variant-numeric: normal;
+}
+.stat-tile .value, .week-count,
+.session-stats, .task-label {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Zeilenlänge auf ~66 Zeichen begrenzen – der wichtigste Lesefaktor.
+   Breite, Rand und Schriftgröße stehen jetzt in Abschnitt 4; hier bleibt
+   nur, was den Satz betrifft. */
+.learn-content {
+  hyphens: auto;              /* deutsche Komposita sauber umbrechen */
+  -webkit-hyphens: auto;
+  text-wrap: pretty;          /* keine einzelnen Wörter in der letzten Zeile */
+}
+.learn-content h2, .learn-content h3 {
+  hyphens: manual;
+  text-wrap: balance;         /* Überschriften gleichmäßig umbrechen */
+}
+
+/* Tabellen und Grafiken dürfen etwas über die Textspalte hinausragen */
+.learn-content .table-wrap,
+.learn-content .fig-wrap { margin-inline: calc(var(--sp-4) * -1); }
+
+/* Ruhigerer vertikaler Rhythmus. Die Abstände selbst kommen aus dem
+   Token-Raster in Abschnitt 4 – hier steht nur, was dort nicht geregelt ist. */
+.learn-content p:last-child { margin-bottom: 0; }
+.learn-content h3 + p, .learn-content h3 + ul { margin-top: 0; }
+.learn-content ul, .learn-content ol { margin: 0 0 var(--sp-4); padding-left: 1.3em; }
+.learn-content li { margin: 0.35em 0; }
+
+/* Rechenschritte brauchen mehr Luft zwischen den Zeilen */
+.example-box p, .herleitung-box p, .merkkasten p { line-height: 1.8; }
+
+/* Selbstcheck-Antworten ebenfalls im Lesemaß */
+
+@media (max-width: 640px) {
+  /* Breite und Innenabstand regelt jetzt Abschnitt 4 – hier bleibt nur, was
+     auf schmalen Geräten wirklich anders sein muss. */
+  .learn-content .table-wrap, .learn-content .fig-wrap { margin-inline: calc(var(--sp-2) * -1); }
+}
+
+/* Kopf, Reiter und Inhalt stehen in einer gemeinsamen Spalte. Die Spalte wird
+   zentriert – sonst klebt der Text am linken Rand und rechts bleibt auf großen
+   Bildschirmen fast die halbe Fläche leer.
+
+   Das galt zuerst nur für den Lesemodus. Auf dem Reiter „Üben" blieben Brotkrume,
+   Titel und die Reiterleiste selbst dann am linken Rand stehen, während sich die
+   Aufgabe weiter zentrierte: Ein Klick auf „Üben" schob den halben Bildschirm um
+   141 px zur Seite, die Reiterleiste unter dem Zeiger eingeschlossen. */
+.topic-view { max-width: var(--measure); margin-inline: auto; }
+.topic-view .learn-content { max-width: none; }
+
+/* Satzqualität auch außerhalb der Erklärseiten */
+h1, h2, h3, .challenge-band h2, .challenge-head h1 { text-wrap: balance; }
+.tagline, .formel-intro, .result-note,
+.fig-cap, .footer-note, .tipp-text, .feedback p, .fb-solution { text-wrap: pretty; }
+/* hyphens: manual, damit keine Formel getrennt wird. Ein überlanges Wort brach
+   dann gar nicht um: „Annahmewahrscheinlichkeit" ragte auf 320 px 8 px aus dem
+   Fenster und schob die ganze Seite zur Seite. overflow-wrap bricht nur, wo
+   sonst nichts mehr passt. */
+.task-question { text-wrap: pretty; hyphens: manual; overflow-wrap: break-word; }
+
+/* Aufgabentext: Schaugröße mit Überschriften-Zeilenabstand. 1,65 stand hier
+   für alle Fragen – bei 40 px Schrift fiel eine zweizeilige Frage in zwei
+   getrennte Zeilen auseinander. Nur wo ein Vektorpfeil über der Zeile sitzt
+   (er belegt keinen Platz im Zeilenkasten), braucht es den Abstand weiter. */
+.task-question { line-height: var(--lh-snug); }
+.task-question:has(.vpfeil) { line-height: 1.65; }
+.feedback .fb-solution { line-height: 1.8; }
+
+
+
+/* ============================================================
+   8 · RECHTLICHE SEITEN (impressum.html, datenschutz.html)
+   Eigene HTML-Dateien statt Routen in app.js: Sie müssen auch ohne
+   JavaScript lesbar sein und sind von jeder Seite aus verlinkbar.
+   ============================================================ */
+.footer-links { margin-top: var(--sp-3); }
+.footer-links a { color: var(--ink-2); text-decoration: none; }
+.footer-links a:hover { color: var(--accent); text-decoration: underline; }
+.rechtstext { max-width: var(--measure); padding-block: var(--sp-6) var(--sp-9);
+  hyphens: auto; }
+.rechtstext h1 { margin: var(--sp-5) 0 var(--sp-5); font: 600 var(--fs-800)/var(--lh-tight) var(--font-display); }
+.rechtstext h2 { margin: var(--sp-6) 0 var(--sp-2); font: 600 var(--fs-500)/var(--lh-snug) var(--font-display); }
+.rechtstext p { margin: 0 0 var(--sp-3); line-height: var(--lh-text); }
+.rechtstext a { color: var(--accent); }
+.rechtstext .zurueck a, .rechtstext .rechts-fuss a { text-decoration: none; font-weight: 500; }
+.rechtstext .kurzfassung { padding: var(--sp-4); background: var(--surface-2); border-radius: var(--r-2); }
+.rechtstext .stand { margin-top: var(--sp-6); color: var(--ink-3); font-size: var(--fs-300); }
+.rechtstext .rechts-fuss { margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--line); }
+/* Noch auszufüllen – auffällig, damit nichts davon online geht.
+   design/veroeffentlichen.sh bricht ab, solange eine Stelle übrig ist. */
+.platzhalter { padding: 0 var(--sp-1); border-radius: var(--r-1);
+  background: var(--err-soft); color: var(--err-ink); font-weight: 600; }

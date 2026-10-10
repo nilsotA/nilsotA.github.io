@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datenschutz – MatheNils</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234a5ae0'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M8 12h8M12 8v8'/%3E%3Cpath d='M18 20h6'/%3E%3C/g%3E%3C/svg%3E">
+  <!-- Dasselbe Farbschema wie in der App: gewählt (localStorage) oder vom System. -->
+  <script>
+    try {
+      const stand = JSON.parse(localStorage.getItem('mathenils-v1') || '{}');
+      const dunkel = stand.theme ? stand.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dunkel ? 'dark' : 'light');
+    } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+  </script>
+  <link rel="stylesheet" href="css/schriften.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="rechtsseite">
+  <main class="container rechtstext">
+    <p class="zurueck"><a href="index.html">← Zurück zu MatheNils</a></p>
+
+    <h1>Datenschutzerklärung</h1>
+
+    <p class="kurzfassung"><strong>Kurz gesagt:</strong> MatheNils braucht keine
+    Anmeldung, setzt keine Cookies, zeigt keine Werbung und bindet keine Dienste
+    von Dritten ein – auch die Schriften liegen auf diesem Server. Dein
+    Lernfortschritt bleibt in deinem Browser und wird nirgendwohin übertragen.
+    Beim Aufruf der Seite verarbeitet nur der Hosting-Anbieter die technisch
+    nötigen Verbindungsdaten.</p>
+
+    <h2>1. Verantwortlicher</h2>
+    <p>
+      Nils Otten<br>
+      Nordring 31<br>
+      50127 Bergheim<br>
+      E-Mail: <a href="mailto:kontakt@mathenils.me">kontakt@mathenils.me</a>
+    </p>
+
+    <h2>2. Aufruf der Seite und Hosting</h2>
+    <!-- Dieser Abschnitt gilt für GitHub Pages. Bei einem anderen Hoster
+         (Vercel, Netlify, Cloudflare Pages) Name, Anschrift und Link ersetzen. -->
+    <p>Die Seite wird über <strong>GitHub Pages</strong> ausgeliefert, einen Dienst
+    der GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA.
+    Wenn du die Seite aufrufst, verarbeitet GitHub technisch notwendige Daten,
+    damit die Seite ausgeliefert werden kann und der Betrieb sicher bleibt –
+    insbesondere deine IP-Adresse, Datum und Uhrzeit des Aufrufs, die aufgerufene
+    Datei sowie Angaben zu Browser und Betriebssystem. GitHub speichert die
+    IP-Adressen von Besuchern nach eigener Angabe aus Sicherheitsgründen.</p>
+    <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte Interesse
+    besteht darin, die Seite zuverlässig, sicher und kostenlos bereitzustellen.
+    Weil GitHub seinen Sitz in den USA hat, können Daten dorthin übermittelt
+    werden; GitHub ist nach dem EU-US Data Privacy Framework zertifiziert, auf
+    dessen Grundlage die Übermittlung nach Art. 45 DSGVO zulässig ist. Mehr dazu
+    in der Datenschutzerklärung von GitHub:
+    docs.github.com/site-policy/privacy-policies/github-general-privacy-statement.</p>
+    <p>Die Adresse mathenils.me ist bei Namecheap, Inc. registriert. Namecheap
+    leitet die Adresse nur an GitHub weiter und erhält dabei keine Daten über
+    die Besucher dieser Seite.</p>
+
+    <h2>3. Speicherung im Browser (Lernfortschritt)</h2>
+    <p>Damit dein Fortschritt beim nächsten Besuch noch da ist, speichert die
+    Seite ihn im lokalen Speicher deines Browsers (<em>localStorage</em>):
+    Erfahrungspunkte, Level, gelöste und falsche Aufgaben je Thema, Serie,
+    Abzeichen, das Ergebnis der Tages-Challenge, die zuletzt gewählte
+    Schwierigkeit und ob du den hellen oder dunklen Modus gewählt hast.</p>
+    <p>Diese Daten verlassen dein Gerät nicht. Sie werden weder an den Server
+    noch an sonst jemanden übertragen, und auch ich kann sie nicht einsehen. Die
+    Speicherung ist für die von dir genutzte Funktion – Üben mit Fortschritt –
+    unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); eine Einwilligung ist dafür
+    nicht nötig.</p>
+    <p>Löschen kannst du die Daten jederzeit selbst: auf der Seite „Statistik“ über
+    „Fortschritt zurücksetzen“ oder über die Einstellungen deines Browsers
+    (Websitedaten löschen).</p>
+
+    <h2>4. Sicherung als Datei</h2>
+    <p>Über „Als Datei sichern“ kannst du deinen Fortschritt als Datei auf deinem
+    Gerät speichern und später wieder einspielen. Auch das geschieht nur in
+    deinem Browser; die Datei wird nicht hochgeladen.</p>
+
+    <h2>5. Kontakt per E-Mail</h2>
+    <p>Wenn du mir eine E-Mail schreibst, verarbeite ich deine Adresse und deine
+    Nachricht, um zu antworten (Art. 6 Abs. 1 lit. f DSGVO). Die E-Mail wird
+    gelöscht, sobald die Sache erledigt ist und keine Aufbewahrungspflicht
+    besteht.</p>
+
+    <h2>6. Kein Tracking, keine Cookies</h2>
+    <p>Es gibt keine Analyse- oder Statistikdienste, keine Cookies, keine
+    eingebetteten Videos, keine Social-Media-Knöpfe und keine Werbung. Es werden
+    keine Profile gebildet.</p>
+
+    <h2>7. Deine Rechte</h2>
+    <p>Du hast das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16),
+    Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18),
+    Datenübertragbarkeit (Art. 20) und Widerspruch gegen die Verarbeitung
+    (Art. 21 DSGVO). Schreib dazu einfach eine E-Mail an die oben genannte
+    Adresse.</p>
+    <p>Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren
+    (Art. 77 DSGVO), zum Beispiel bei der Behörde deines Bundeslandes. Für mich
+    zuständig ist: die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen (LDI NRW), Kavalleriestraße 2–4, 40213 Düsseldorf.</p>
+
+    <h2>8. Kinder und Jugendliche</h2>
+    <p>MatheNils richtet sich auch an Schülerinnen und Schüler. Weil die Seite
+    keine Anmeldung kennt und keine personenbezogenen Daten von Nutzerinnen und
+    Nutzern sammelt, braucht es dafür keine Zustimmung der Eltern.</p>
+
+    <p class="stand">Stand: Oktober 2026</p>
+
+    <p class="rechts-fuss"><a href="impressum.html">Impressum</a></p>
+  </main>
+</body>
+</html>
