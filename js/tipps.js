@@ -194,7 +194,7 @@ const TOPIC_TIPPS = {
   ableitungsregeln: {
     1: 'Sieh dir zuerst die Bauart an: Zwei Klammern nebeneinander verlangen die Produktregel, eine Klammer mit Exponent die Kettenregel, ein Bruchstrich mit x im Nenner die Quotientenregel. Bei der Produktregel benennst du u und v, leitest beide einzeln ab und setzt in u′ · v + u · v′ ein.',
     2: 'Bei einer Klammer mit Exponent gilt: äußere Ableitung mal innere Ableitung. Der Exponent kommt nach vorn, die Klammer bleibt stehen und wird um eins kleiner – und dann folgt der Faktor, den die Klammer selbst als Ableitung hat. Genau dieser letzte Faktor wird am häufigsten vergessen.',
-    3: 'Beim Bruch steht im Zähler eine Differenz, die Reihenfolge zählt: erst u′ · v, dann minus u · v′; der Nenner wird quadriert. Eine Wurzel ist die Potenz ½ – ihre Ableitung ist 1 durch die doppelte Wurzel, mal innere Ableitung. Steckt in einer Klammer ein Exponent, arbeite mit der Kettenregel von außen nach innen.'
+    3: 'Beim Bruch zählt die Reihenfolge: erst u′ · v, dann minus u · v′, der Nenner wird quadriert. Wurzel und ln sind äußere Funktionen: (√v)′ = 1/(2√v), (ln v)′ = 1/v – beide mal innere Ableitung. Steht ein x vor einer Klammer mit Exponent, erst Produkt-, dann Kettenregel.'
   },
   efunktion: {
     1: 'e und ln sind Umkehrfunktionen und heben sich gegenseitig auf – wie Quadrieren und Wurzelziehen. ln fragt: „Mit welchem Exponenten muss ich e potenzieren?“ Beim Ableiten bleibt der e-Teil unverändert, dazu kommt die Ableitung des Exponenten als Faktor davor.',

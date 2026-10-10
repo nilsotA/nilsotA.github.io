@@ -880,8 +880,35 @@ const TOPICS_OBER_NEU = (() => {
         };
       }
 
-      /* ---------- Stufe 3: Quotientenregel, Wurzel, Kombination ---------- */
-      const kind = choice(['quotient', 'wurzel', 'kombi']);
+      /* ---------- Stufe 3: Quotientenregel, Wurzel, Logarithmus, Kombination ---------- */
+      const kind = choice(['quotient', 'wurzel', 'logarithmus', 'kombi']);
+
+      if (kind === 'logarithmus') {
+        // f(x) = ln(ax + b), f′(x0) = a / (ax0 + b). Der Wert t = ax0 + b hat nur
+        // die Primfaktoren 2 und 5, also bricht a/t als Dezimalzahl ab. a ≥ 2, sonst
+        // wäre „mal innere Ableitung" ein leerer Schritt (· 1). a ≠ t,
+        // sonst stünde immer 1 da; b ≠ 0, sonst kürzt sich a weg (ln(ax) hat die
+        // Ableitung 1/x – das steht als Selbstcheck auf der Seite).
+        let a, x0, t, b;
+        do {
+          t = choice([2, 4, 5, 8, 10]); a = rnd(2, 9); x0 = rnd(1, 4); b = t - a * x0;
+        } while (a === t || b === 0);
+        const res = a / t;
+        return {
+          q: `Gegeben ist f(x) = ln(${linTerm(a, b)}). Berechne f′(${fmt(x0)}). <span class="hint">Kettenregel: ln ist die äußere Funktion.</span>`,
+          type: 'input', placeholder: 'f′(' + fmt(x0) + ')',
+          check: numCheck(res), testAnswer: String(res), answerText: `f′(${fmt(x0)}) = ${fmt(res)}`,
+          // Aufbau wie im Beispiel „ln mit innerer Funktion" der Erklärseite.
+          solution: `Kettenregel, der Logarithmus ist außen.<br>` +
+            `Innere Funktion v = ${linTerm(a, b)} → v′ = ${fmt(a)}&ensp;<span class="trenn">•</span>&ensp;` +
+            `äußere Funktion u = ln(v) → u′ = 1 ⁄ v<br>` +
+            `<strong>Äußere mal innere Ableitung:</strong><br>` +
+            `f′(x) = 1 ⁄ (${linTerm(a, b)}) · ${fmt(a)} = ${fmt(a)} ⁄ (${linTerm(a, b)})<br>` +
+            `An der Stelle ${fmt(x0)} ist ${linTerm(a, b)} = ${fmt(a)} · ${fmt(x0)} ${b > 0 ? '+' : '−'} ${fmt(Math.abs(b))} = ${fmt(t)}.<br>` +
+            `f′(${fmt(x0)}) = ${fmt(a)} ⁄ ${fmt(t)} = <strong>${fmt(res)}</strong><br>` +
+            `<em>Ohne die innere Ableitung</em> stünde dort 1 ⁄ ${fmt(t)} = ${fmt(1 / t)} – der Faktor ${fmt(a)} fehlte.`
+        };
+      }
 
       if (kind === 'quotient') {
         const a = rnd(1, 5), b = rnd(1, 6) * choice([1, -1]);

@@ -162,6 +162,24 @@ const TOPIC_GROUPS = (() => {
 
 const TOPICS = TOPIC_GROUPS.flatMap(g => g.topics);
 
+/* Erklärvideos vom YouTube-Kanal MatheNils, je Thema. app.js zeigt sie auf der
+   Erklärseite unter der Illustration – als einfache Links, nicht eingebettet:
+   Ein eingebettetes Video lädt schon beim Aufruf der Seite Daten von YouTube
+   (und setzt Cookies), ein Link erst beim Klick. Titel ohne die Emoji der
+   YouTube-Titel; in der Oberfläche gibt es keine. Neues Video: id ist der
+   Teil hinter „watch?v=". */
+const ERKLAERVIDEOS = {
+  ableitungen: [
+    { id: '5vtfxPtbYtc', titel: 'Ableitungen einfach erklärt – Regeln, Beispiele und Übungsaufgaben' },
+    { id: 'DGESIcaQBlE', titel: 'Ableitungen in Klasse 10 – Beispiele zu allen Regeln' }
+  ],
+  ableitungsregeln: [
+    { id: 'Mlfg_rKkL8Q', titel: 'Produktregel einfach erklärt' },
+    { id: 'aOt-NGQk-Tg', titel: 'Kettenregel einfach erklärt – Ableitung von sin(x²)' },
+    { id: 'j8Sp9JpwJ0c', titel: 'Logarithmus ableiten einfach erklärt' }
+  ]
+};
+
 /**
  * Die Knöpfe des Stufenfilters. Bewusst eine eigene Liste und nicht aus
  * TOPIC_GROUPS abgeleitet: Die Stochastik gehört zu zwei Stufen, und zwei

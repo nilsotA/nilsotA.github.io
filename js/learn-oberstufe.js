@@ -439,6 +439,8 @@ const LEARN_OBER = (() => {
         Faktor heißt Nachdifferenzieren – ihn zu vergessen ist der häufigste Fehler überhaupt.</p>
         <p>Sonderfall Wurzel: √v ist die Potenz v<sup>1/2</sup>, also <strong>(√v)′ = ${frac('1', '2√v')}</strong> –
         danach wie immer mal v′.</p>
+        <p>Logarithmus: <strong>(ln x)′ = ${frac('1', 'x')}</strong> und <strong>(log<sub>a</sub> x)′ = ${frac('1', 'x · ln(a)')}</strong> –
+        steht innen ein Term, wieder mal innere Ableitung.</p>
       </div>
 
       <ol class="schritte">
@@ -485,6 +487,26 @@ const LEARN_OBER = (() => {
         Die 3 im Zähler ist wieder das Nachdifferenzieren – ohne sie stünde dort nur ${frac('1', '6')}.</p>
       </div>
 
+      <h3>Logarithmen ableiten</h3>
+      <p>Der natürliche Logarithmus ln ist die Umkehrfunktion von e<sup>x</sup> – das kennst du aus
+      dem Thema e-Funktion. Seine Ableitung ist überraschend einfach, und die Kettenregel zeigt, warum.</p>
+
+      <div class="example-box"><span class="ex-title">Warum (ln x)′ = 1 ⁄ x gilt</span>
+        <p>Weil e und ln sich aufheben, gilt für jedes x &gt; 0: e<sup>ln(x)</sup> = x.<br>
+        Beide Seiten ableiten. Links steht eine Verkettung – außen e<sup>v</sup>, innen v = ln(x):<br>
+        e<sup>ln(x)</sup> · (ln x)′ = 1<br>
+        Der erste Faktor ist wieder x, also x · (ln x)′ = 1 und damit <strong>(ln x)′ = ${frac('1', 'x')}</strong>.<br>
+        Für einen Logarithmus zu einer anderen Basis rechnet man um: log<sub>a</sub>(x) = ${frac('ln(x)', 'ln(a)')}.
+        ln(a) ist nur eine Zahl, also (log<sub>a</sub> x)′ = ${frac('1', 'x · ln(a)')} – bei log<sub>10</sub> etwa ${frac('1', 'x · 2,303')}.</p>
+      </div>
+
+      <div class="example-box"><span class="ex-title">ln mit innerer Funktion</span>
+        <p>f(x) = ln(x² + 1)<br>
+        innere Funktion v = x² + 1 → v′ = 2x&ensp;<span class="trenn">•</span>&ensp;äußere Funktion u = ln(v) → u′ = ${frac('1', 'v')}<br>
+        f′(x) = ${frac('1', 'x² + 1')} · 2x = <strong>${frac('2x', 'x² + 1')}</strong><br>
+        <em>Bei x = 3:</em> ${frac('6', '10')} = 0,6. Ohne das Nachdifferenzieren stünde dort ${frac('1', '10')} – der Faktor 2x fehlte.</p>
+      </div>
+
       <h3>Die Quotientenregel: Reihenfolge entscheidet</h3>
       <p>Anders als beim Produkt darf man u und v hier <strong>nicht</strong> vertauschen: Im Zähler
       steht eine Differenz, und ein Vorzeichenfehler dreht das ganze Ergebnis um.</p>
@@ -524,6 +546,9 @@ const LEARN_OBER = (() => {
         <details><summary>Was ist bei f(x) = (5x − 2)⁴ innen, was außen?</summary>
           <p>Innen v = 5x − 2, außen u = v⁴. Probe mit x = 1: erst 5 − 2 = 3, dann 3⁴ = 81.
           Was zuerst gerechnet wird, ist innen. f′(x) = 4 · (5x − 2)³ · 5 = 20 · (5x − 2)³.</p></details>
+        <details><summary>Was ist die Ableitung von f(x) = ln(5x)?</summary>
+          <p>Kettenregel: ${frac('1', '5x')} · 5 = ${frac('1', 'x')}. Die 5 kürzt sich weg – kein Zufall, denn
+          ln(5x) = ln(5) + ln(x), und ln(5) ist nur eine Zahl, die beim Ableiten wegfällt.</p></details>
         <details><summary>Warum darf man bei der Quotientenregel u und v nicht vertauschen?</summary>
           <p>Weil im Zähler eine Differenz steht. Aus u′v − uv′ würde uv′ − u′v, also genau das
           Negative. Bei f(x) = ${frac('x + 1', 'x − 2')} stünde dann +3 statt −3 im Zähler – der Graph

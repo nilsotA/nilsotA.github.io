@@ -832,6 +832,19 @@
       if (intro) intro.insertAdjacentHTML('afterend', figur);
     }
 
+    // Erklärvideos zum Thema (ERKLAERVIDEOS in topics-index.js): hinter die
+    // Illustration, sonst hinter den Einleitungsabsatz – dort, wo man noch
+    // entscheidet, ob man lieber liest oder schaut.
+    const videos = (typeof ERKLAERVIDEOS !== 'undefined' && ERKLAERVIDEOS[topic.id]) || [];
+    if (videos.length) {
+      const anker = art.querySelector('.fig-wrap') || art.querySelector('h2 + p');
+      if (anker) anker.insertAdjacentHTML('afterend', `
+        <aside class="video-hinweis" aria-label="Erklärvideos auf YouTube">
+          <p class="video-titel">${videos.length > 1 ? 'Erklärvideos' : 'Erklärvideo'} auf YouTube</p>
+          <ul>${videos.map(v => `<li><a href="https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}" rel="noopener">${escapeAttr(v.titel)}</a></li>`).join('')}</ul>
+        </aside>`);
+    }
+
     // Beispiele durchnummerieren: „Beispiel 3 · Kreis“
     const beispiele = art.querySelectorAll('.example-box');
     beispiele.forEach((box, i) => {
